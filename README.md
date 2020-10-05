@@ -1,3 +1,18 @@
+# This is a custom fork of GoCS, found at https://github.com/lazlo-bonin/gocs
+
+This fork is intended to give the interface/component developer the ability to encode whether an an event is an incoming event that needs to be handled by the component, or an emitted (output) event that needs to can be reacted to by systems.
+
+To quote Lazlo (the original developer) on this:
+> In the ideal world, this access control would be better — the component should be able to explicitly define whether an event can be subscribed externally, or published externally, or both. 
+
+This fork provides the developer with the option of specifying this information.
+
+
+# Original description follows:
+
+----
+
+
 # GameObject Component System (GoCS) for Unity
 
 💡 GoCS (pronounced ***go-cee-ess***) is a design pattern for Unity. It's inspired by entity component system (ECS), but it works with the existing Unity GameObject + Component architecture, hence the name. It's also more flexible and less strict than ECS. As such, it's easy to get started using the concepts and API you're already familiar with. 
