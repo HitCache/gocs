@@ -1,5 +1,8 @@
 # This is a custom fork of GoCS, found at https://github.com/lazlo-bonin/gocs
 
+> Please read the original readme on GoCS to better understand the slight changes to this fork.  
+
+
 This fork is intended to give the interface/component developer the ability to encode whether an event is an incoming event that needs to be handled by the component, or an emitted (output) event that can be reacted to by systems.
 
 To quote Lazlo (the original developer) on this:
@@ -7,6 +10,85 @@ To quote Lazlo (the original developer) on this:
 
 This fork provides the developer with the option of specifying this information.
 
+# Quick Example
+
+```csharp
+// This example demonstrates an emitted event, that only the actual component can invoke,
+// as well as a handled event that it consumes.
+interface IPlayerWallet
+{
+    // Attributes
+    float WalletValue {get;}
+    
+   // Events
+   IHandledEvent<float> Pay { get; }
+   IEmittedEvent<float> WalletValueChanged { get; }
+}
+```
+
+This can be implemented easily using the full Event class from GoCS, which has been modified to fulfill these interfaces.  Here's an oversimplified example that demonstrates how to fulfill the interface requirements.  We make use of expression-bodied members and explict interface implementation to avoid confusion when filling the class details. (Because the class needs to be able to Invoke the event, it needs a backing GoCS Event.  Using explicit interface implementation allows us to name our backing field the same name as the property and prevent confusion.  The explicit property will only be used by externals using the interface.)
+
+```csharp
+class PlayerWallet : BaseComponent, IPlayerWallet
+{
+    // Attributes
+    private float _WalletValue = 0;
+    public float WalletValue 
+    {
+        get {return _WalletValue;}
+        private set { _WalletValue = value; WalletValueChanged?.Invoke(value); }
+    }
+
+    //Events 
+    IHandledEvent<float> Pay {get; private set}
+
+    private Event<float> WalletValueChanged = new Event<float>();
+    IEmittedEvent<float> IPlayerWallet.WalletValueChanged => WalletValueChanged;
+
+
+    // Class code
+    protected override void Awake()
+    {
+        base.Awake();
+        Pay = new Event<float>(OnPay);
+    }
+    
+    public void OnPay(float value)
+    {
+        WalletValue -= value;
+    }
+}
+```
+
+Should you wish to have a bidirectional event, simply use the added `IEvent`, or the preexisting `Event` class from GoCS.
+
+
+
+# Installing
+
+### If you have never had GoCS in your project:
+
+To import GoCS, open `Packages/manifest.json` and add this line under `dependencies`:
+
+```json
+"dev.lazlo.gocs": "https://github.com/RealityStop/gocs.git"
+```
+
+### If you have GoCS already in your project:
+
+Open `Packages/manifest.json` and **remove** this line under `dependencies`:
+
+```json
+"dev.lazlo.gocs": "https://github.com/lazlo-bonin/gocs.git"
+```
+
+Return to Unity and let it update your project (cringe at the wall of errors), then add 
+
+```json
+"dev.lazlo.gocs": "https://github.com/RealityStop/gocs.git"
+```
+
+in place of the original line.  Then return to Unity and let it reimport.
 
 # Original description follows:
 
