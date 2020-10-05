@@ -1,6 +1,6 @@
 # This is a custom fork of GoCS, found at https://github.com/lazlo-bonin/gocs
 
-This fork is intended to give the interface/component developer the ability to encode whether an an event is an incoming event that needs to be handled by the component, or an emitted (output) event that needs to can be reacted to by systems.
+This fork is intended to give the interface/component developer the ability to encode whether an event is an incoming event that needs to be handled by the component, or an emitted (output) event that can be reacted to by systems.
 
 To quote Lazlo (the original developer) on this:
 > In the ideal world, this access control would be better — the component should be able to explicitly define whether an event can be subscribed externally, or published externally, or both. 
