@@ -13,7 +13,7 @@ namespace Lazlo.Gocs
 	/// </remarks>
 	/// <typeparam name="TArgs">The type of argument.</typeparam>
 	/// <seealso cref="Event"/>
-	public sealed class Event<TArgs>
+	public sealed class Event<TArgs> : IEvent<TArgs>
 	{
 		private readonly HashSet<Action<TArgs>> handlers;
 
