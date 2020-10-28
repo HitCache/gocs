@@ -3,7 +3,7 @@
 > Please read the original readme on GoCS to better understand the slight changes to this fork.  
 
 
-This fork is intended to give the interface/component developer the ability to encode whether an event is an incoming event that needs to be handled by the component, or an emitted (output) event that can be reacted to by systems.
+This fork is intended to give the interface/component developer the ability to encode whether an event is an incoming event that needs to be handled by the component, or an emitted (output) event that can be reacted to by systems.  In addition, a simple Message bus is added for inter-system communication (which is rarely needed, but handy, such as disabling the camera controls on a game mode change, for example).
 
 To quote Lazlo (the original developer) on this:
 > In the ideal world, this access control would be better — the component should be able to explicitly define whether an event can be subscribed externally, or published externally, or both. 
