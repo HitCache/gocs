@@ -876,6 +876,66 @@ class DestructionSystem : BaseSystem
     }
 }
 ```
+## Important notes on event improvements by RealityStop (https://github.com/RealityStop/)
+
+This fork is intended to give the interface/component developer the ability to encode whether an event is an incoming event that needs to be handled by the component, or an emitted (output) event that can be reacted to by systems.  In addition, a simple Message bus is added for inter-system communication (which is rarely needed, but handy, such as disabling the camera controls on a game mode change, for example).
+
+To quote Lazlo (the original developer) on this:
+> In the ideal world, this access control would be better — the component should be able to explicitly define whether an event can be subscribed externally, or published externally, or both. 
+
+This fork provides the developer with the option of specifying this information.
+
+### Quick Example
+
+```csharp
+// This example demonstrates an emitted event, that only the actual component can invoke,
+// as well as a handled event that it consumes.
+interface IPlayerWallet
+{
+    // Attributes
+    float WalletValue {get;}
+    
+   // Events
+   IHandledEvent<float> Pay { get; }
+   IEmittedEvent<float> WalletValueChanged { get; }
+}
+```
+
+This can be implemented easily using the full Event class from GoCS, which has been modified to fulfill these interfaces.  Here's an oversimplified example that demonstrates how to fulfill the interface requirements.  We make use of expression-bodied members and explict interface implementation to avoid confusion when filling the class details. (Because the class needs to be able to Invoke the event, it needs a backing GoCS Event.  Using explicit interface implementation allows us to name our backing field the same name as the property and prevent confusion.  The explicit property will only be used by externals using the interface.)
+
+```csharp
+class PlayerWallet : BaseComponent, IPlayerWallet
+{
+    // Attributes
+    private float _WalletValue = 0;
+    public float WalletValue 
+    {
+        get {return _WalletValue;}
+        private set { _WalletValue = value; WalletValueChanged?.Invoke(value); }
+    }
+
+    //Events 
+    IHandledEvent<float> Pay {get; private set}
+
+    private Event<float> WalletValueChanged = new Event<float>();
+    IEmittedEvent<float> IPlayerWallet.WalletValueChanged => WalletValueChanged;
+
+
+    // Class code
+    protected override void Awake()
+    {
+        base.Awake();
+        Pay = new Event<float>(OnPay);
+    }
+    
+    public void OnPay(float value)
+    {
+        WalletValue -= value;
+    }
+}
+```
+
+Should you wish to have a bidirectional event, simply use the added `IEvent`, or the preexisting `Event` class from GoCS.
 
 ---
 
