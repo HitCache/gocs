@@ -9,7 +9,7 @@ namespace Lazlo.Gocs
 	/// Events support assigning handlers and invoking from anywhere. 
 	/// </summary>
 	/// <seealso cref="Event{TArgs}"/>
-	public sealed class Event
+	public sealed class Event : IEvent
 	{
 		private readonly HashSet<Action> handlers;
 
